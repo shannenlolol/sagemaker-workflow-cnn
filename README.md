@@ -149,4 +149,3 @@ MIT License
 - [Amazon SageMaker](https://aws.amazon.com/sagemaker/)
 - [PyTorch](https://pytorch.org/)
 - [torchvision](https://pytorch.org/vision/)
-# sagemaker-workflow-cnn
