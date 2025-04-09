@@ -57,7 +57,7 @@ cd sagemaker-workflow-cnn
 
 ---
 
-## Training Methods
+## Step 1: Train the Model
 
 | Folder                            | Method                          | Description                                           |
 | --------------------------------- | ------------------------------- | ----------------------------------------------------- |
@@ -67,22 +67,14 @@ cd sagemaker-workflow-cnn
 | `training/4_byoc/`                | Bring Your Own Container (BYOC) | Full custom Docker image and training environment     |
 | `training/5_pretrained_finetune/` | Pretrained Fine-Tuning          | Fine-tune pretrained ResNet-50 on your dataset        |
 
+Output:
+A trained model file, usually saved in S3 as:
+
+```bash
+s3://your-bucket/output/model.tar.gz
+```
 ---
-
-## Deployment Methods
-
-| Script                                 | Method                 | Description                                            |
-| -------------------------------------- | ---------------------- | ------------------------------------------------------ |
-| `deployment/1_realtime_endpoint.py`    | Real-Time Inference    | Low-latency HTTPS endpoint using `PyTorchModel`        |
-| `deployment/2_batch_transform.py`      | Batch Transform        | Inference over large S3 datasets (offline)             |
-| `deployment/3_serverless_inference.py` | Serverless Inference   | Pay-per-request prediction, no EC2 management          |
-| `deployment/4_async_inference.py`      | Asynchronous Inference | Queue-based prediction for large or long jobs          |
-| `deployment/5_jumpstart_model.py`      | JumpStart Pretrained   | Deploy ResNet-50 pretrained model from AWS JumpStart   |
-| `deployment/6_jumpstart_estimator.py`  | JumpStart Fine-Tuning  | Fine-tune JumpStart's ResNet-50 model on your own data |
-
----
-
-## Inference Script
+## Step 2: Inference Script for Deployment
 
 The `inference.py` file defines how SageMaker loads the model and serves predictions.
 
@@ -95,7 +87,37 @@ The `inference.py` file defines how SageMaker loads the model and serves predict
 
 ---
 
-## Evaluation
+
+## Step 3: Deploy the Model to an Endpoint
+
+| Script                                 | Method                 | Description                                            |
+| -------------------------------------- | ---------------------- | ------------------------------------------------------ |
+| `deployment/1_realtime_endpoint.py`    | Real-Time Inference    | Low-latency HTTPS endpoint using `PyTorchModel`        |
+| `deployment/2_batch_transform.py`      | Batch Transform        | Inference over large S3 datasets (offline)             |
+| `deployment/3_serverless_inference.py` | Serverless Inference   | Pay-per-request prediction, no EC2 management          |
+| `deployment/4_async_inference.py`      | Asynchronous Inference | Queue-based prediction for large or long jobs          |
+| `deployment/5_jumpstart_model.py`      | JumpStart Pretrained   | Deploy ResNet-50 pretrained model from AWS JumpStart   |
+| `deployment/6_jumpstart_estimator.py`  | JumpStart Fine-Tuning  | Fine-tune JumpStart's ResNet-50 model on your own data |
+
+---
+
+## Step 4: Make Predictions (Client Script)
+
+Client-side file:
+```bash
+deployment/invoke_realtime.py
+```
+
+This file:
+- Loads test input (e.g. an image)
+
+- Sends it to the SageMaker endpoint
+
+- Receives the prediction (inference result)
+
+---
+
+## Step 5: Evaluation
 
 Evaluate your model using:
 
@@ -111,7 +133,7 @@ Outputs include:
 
 ---
 
-## Pipelines for MLOps
+## Additional Step 1: Pipelines for MLOps
 
 The `pipelines/build_pipeline.py` automates:
 
@@ -123,7 +145,7 @@ Use SageMaker Studio or SDK to trigger and monitor this pipeline.
 
 ---
 
-## Monitoring Your Endpoints
+## Additional Step 2: Monitoring Your Endpoints 
 
 Check endpoint health using:
 
